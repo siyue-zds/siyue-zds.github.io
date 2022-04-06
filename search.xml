@@ -2,9 +2,12 @@
 <search>
   <entry>
     <title>遗传算法的生物学基础</title>
-    <url>/2022/04/04/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E7%94%9F%E7%89%A9%E5%AD%A6%E5%9F%BA%E7%A1%80/</url>
+    <url>/2022/04/04/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E7%94%9F%E7%89%A9%E5%AD%A6%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<p>生物在自然界中的生存繁衍，显示出了其对自然环境的优异自适应能力。受其启发，人们致力于对生物各种生存特性的机理研究和行为模拟，为人工自适应系统的设计和开发提供了广阔的前景。<strong>遗传算法（Genetic Algorithms，简称GAs）</strong> 就是这种生物行为的计算机模拟中令人瞩目的重要成果。基于对生物遗传和进化过程的计算机模拟，遗传算法使得各种人工系统具有优良的自适应能力和优化能力。遗传算法所借鉴的生物学基础就是生物的遗传和进化。<br><span id="more"></span></p>
-<p><img src="../images/DNA.jpg" alt="DNA"></p>
+<div align=center>
+<img src="DNA.jpg" width = 80% height="80%">
+</div>
+
 <h1 id="1-遗传与变异"><a href="#1-遗传与变异" class="headerlink" title="1. 遗传与变异"></a>1. 遗传与变异</h1><p><strong>遗传(Heredity)</strong> ：亲代表达相应性状的基因通过无性繁殖或有性繁殖传递给后代，从而使后代获得其父母遗传信息的现象。</p>
 <p><strong>变异(Variation)</strong> ：在生物体上泛指生物种与个体之间的各种差异，包括形态、生理、生化以及行为、习性等各方面的歧异，变异是生物进化和人类育种的根源，包括可遗传的和不可遗传的变异。</p>
 <p>构成生物的基本结构和功能单位是<strong>细胞(Cell)</strong> 。细胞中含有的一种微小的丝状化合物称为<strong>染色体(Chromosome)</strong> ，生物的所有遗传信息都包含在这个复杂而又微小的染色体中。遗传信息是由<strong>基因(Gene)</strong> 组成的,生物的各种性状由其相应的基因所控制，基因是遗传的基本单位。细胞通过分裂具有自我复制的能力，在细胞分裂的过程中，其遗传基因也同时被复制到下一代，从而其性状也被下一代所继承。</p>
@@ -40,7 +43,7 @@
   </entry>
   <entry>
     <title>遗传算法简介</title>
-    <url>/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/</url>
+    <url>/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/</url>
     <content><![CDATA[<p>遗传算法是模拟生物在自然环境中的遗传和进化过程而形成的一种自适应全局优化概率搜索算法。它最早由美国密歇根大学的 Holland 教授提出，起源于60年代对自然和人工自适应系统的研究。70年代 De Jong 基于遗传算法的思想在计算机上进行了大量的纯数值函数优化计算实验。在一系列研究工作的基础上，80年代由 Goldberg 进行归纳总结，形成了遗传算法的基本框架。<br><span id="more"></span></p>
 <h1 id="1-遗传算法概要"><a href="#1-遗传算法概要" class="headerlink" title="1. 遗传算法概要"></a>1. 遗传算法概要</h1><p>对于一个求函数最大值的优化问题（求函数最小值也类同），一般可描述为下述数学规划模型:</p>
 <p>$<br>\begin{cases}\max &amp; f(X) \\ \text { s.t. } &amp; X \in R \\ &amp; R \subseteq U\end{cases}<br>$</p>
@@ -67,7 +70,10 @@
 <li><strong>交叉（crossover）</strong> :将群体 $P(t)$ 内的各个个体随机搭配成对，对每一对个体，以某个概率（称为交叉概率，crossoverrate）交换它们之间的部分染色体。</li>
 <li><strong>变异（mutation）</strong> :对群体 $P(t)$ 中的每一个个体，以某一概率（称为变异概率，mutation rate）改变某一个或某一些基因座上的基因值为其他的等位基因。</li>
 </ul>
-<h1 id="2-遗传算法的一般步骤"><a href="#2-遗传算法的一般步骤" class="headerlink" title="2. 遗传算法的一般步骤"></a>2. 遗传算法的一般步骤</h1><p><img src="../images/GA_flowchart.jpg" alt="GA_flowchart"></p>
+<h1 id="2-遗传算法的一般步骤"><a href="#2-遗传算法的一般步骤" class="headerlink" title="2. 遗传算法的一般步骤"></a>2. 遗传算法的一般步骤</h1><div align=center>
+<img src="GA_flowchart.jpg" width = 50% height="50%">
+</div>
+
 <p>遗传算法的主要运算步骤过程如下：</p>
 <ol>
 <li>初始化。设置进化代数计数器 $t \leftarrow 0$ ;设置最大进化代数;随机生成M个个体作为初始群体 $P(0)$ 。</li>
