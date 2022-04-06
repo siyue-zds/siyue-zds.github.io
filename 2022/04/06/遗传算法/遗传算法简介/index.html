@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/white/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"siyue-zds.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="遗传算法是模拟生物在自然环境中的遗传和进化过程而形成的一种自适应全局优化概率搜索算法。它最早由美国密歇根大学的 Holland 教授提出，起源于60年代对自然和人工自适应系统的研究。70年代 De Jong 基于遗传算法的思想在计算机上进行了大量的纯数值函数优化计算实验。在一系列研究工作的基础上，80年代由 Goldberg 进行归纳总结，形成了遗传算法的基本框架。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="遗传算法简介">
+<meta property="og:url" content="https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="遗传算法是模拟生物在自然环境中的遗传和进化过程而形成的一种自适应全局优化概率搜索算法。它最早由美国密歇根大学的 Holland 教授提出，起源于60年代对自然和人工自适应系统的研究。70年代 De Jong 基于遗传算法的思想在计算机上进行了大量的纯数值函数优化计算实验。在一系列研究工作的基础上，80年代由 Goldberg 进行归纳总结，形成了遗传算法的基本框架。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/images/GA_flowchart.jpg">
+<meta property="article:published_time" content="2022-04-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-06T09:20:12.938Z">
+<meta property="article:author" content="siyue">
+<meta property="article:tag" content="遗传算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/images/GA_flowchart.jpg">
+
+
+<link rel="canonical" href="https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":"","permalink":"https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/","path":"2022/04/06/遗传算法/遗传算法简介/","title":"遗传算法简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>遗传算法简介 | Blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E6%A6%82%E8%A6%81"><span class="nav-text">1. 遗传算法概要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%80%E8%88%AC%E6%AD%A5%E9%AA%A4"><span class="nav-text">2. 遗传算法的一般步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-text">3. 遗传算法的特点</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="siyue"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">siyue</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/siyue-zds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;siyue-zds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://siyue-zds.github.io/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="siyue">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="遗传算法简介 | Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          遗传算法简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-06 00:00:00 / 修改时间：17:20:12" itemprop="dateCreated datePublished" datetime="2022-04-06T00:00:00+08:00">2022-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">遗传算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>遗传算法是模拟生物在自然环境中的遗传和进化过程而形成的一种自适应全局优化概率搜索算法。它最早由美国密歇根大学的 Holland 教授提出，起源于60年代对自然和人工自适应系统的研究。70年代 De Jong 基于遗传算法的思想在计算机上进行了大量的纯数值函数优化计算实验。在一系列研究工作的基础上，80年代由 Goldberg 进行归纳总结，形成了遗传算法的基本框架。<br><span id="more"></span></p>
+<h1 id="1-遗传算法概要"><a href="#1-遗传算法概要" class="headerlink" title="1. 遗传算法概要"></a>1. 遗传算法概要</h1><p>对于一个求函数最大值的优化问题（求函数最小值也类同），一般可描述为下述数学规划模型:</p>
+<p>$<br>\begin{cases}\max &amp; f(X) \\ \text { s.t. } &amp; X \in R \\ &amp; R \subseteq U\end{cases}<br>$</p>
+<p>式中， $X=\left[\begin{array}{llll}x_{1}, &amp; x_{2}, &amp; \cdots, &amp; x_{n}\end{array}\right]^{T}$ 为决策变量， $U$ 是基本空间， $R$ 是 $U$ 的一个子集。满足约束条件的解 $X$ 称为可行解,集合 $R$ 表示由所有满足约束条件的解所组成的一个集含，叫做可行解集合。三者之间的关系是 $X \in R \in U$。</p>
+<p>对于上述最优化问题，目标函数和约束条件种类繁多，有的是线性的，有的是非线性的;有的是连续的，有的是离散的。随着研究的深入，人们逐渐认识到在很多复杂情况下要想完全精确地求出其最优解既不可能，也不现实，因而求出其 <strong>近似最优解或满意解</strong> 是人们的主要着眼点之一。总的来说，求最优解或近似最优解的方法主要有三种:枚举法、启发式算法和搜索算法。</p>
+<ol>
+<li><p><strong>枚举法</strong> : 枚举出可行解集合内的所有可行解，以求出精确最优解。对于连续函数，该方法要求先对其进行离散化处理，这样就有可能产生离散误差而永远达不到最优解。另外，当枚举空间比较大时，该方法的求解效率比较低，有时甚至在目前最先进的计算工具上都无法求解。</p>
+</li>
+<li><p><strong>启发式算法</strong> : 寻求一种能产生可行解的启发式规则，以找到-个最优解或近似最优解。该方法的求解效率虽然比较高，但对每一个需要求解的问题都必须找出其特有的启发式规则，这个启发式规则无通用性，不适合于其他问题。</p>
+</li>
+<li><p><strong>搜索算法</strong> : 寻求一种搜索算法，该算法在可行解集合的一个子集内进行搜索操作，以找到问题的最优解或近似最优解。该方法虽然保证不了一定能够得到问题的最优解，但若适当地利用一些启发知识，就可在近似解的质量和求解效率上达到一种较好的平衡。</p>
+</li>
+</ol>
+<p>随着问题种类的不同，以及问题规模的扩大，要寻求到一种能以有限的代价来解决上述最优化问题的通用方法仍是一个难题。而遗传算法却为我们解决这类问题提供了一个有效的途径和通用框架，开创了一种新的全局优化搜索算法。</p>
+<p>遗传算法中，将 $n$ 维决策向量 $X=\left[\begin{array}{llll}x_{1}, &amp; x_{2}, &amp; \cdots, &amp; x_{n}\end{array}\right]^{T}$ 下用 $n$ 个记号 $X_{i}(i=1,2, \cdots, n)$ 所组成的符号串 $X$ 来表示:</p>
+<p>$<br>X=X_{1} X_{2} \cdots X_{n} \Rightarrow X=\left[\begin{array}{llll}<br>x_{1}, &amp; x_{2}, &amp; \cdots, &amp; x_{n}<br>\end{array}\right]^{T}<br>$</p>
+<p>把每一个 $X_{i}$ 看作一个遗传基因，它的所有可能取值称为等位基因，这样，$X$就可看做是由 $n$ 个遗传基因所组成的一个染色体。</p>
+<p>一般情况下，染色体的长度 $n$ 是固定的，但对一些问题 $n$ 也可以是变化的。根据不同的情况，等位基因可以是一组整数，也可以是某一范围内的实数值，或者是纯粹的一个记号。最简单的等位基因是由 0 和 1 两个整数组成的，相应的染色体就可表示为一个二进制符号串。这种编码所形成的排列形式 $X$ 是个体的基因型,与它对应的 $X$ 值是个体的表现型。通常个体的表现型和其基对型是一一对应的，但有时也允许基因型和表现型是多对一的关系。染色体 $X$ 也称为个体 $X$ ，对于每一个个体 $X$ ，要按照一定的规则确定出其适应度。个体的适应度与其对应的个体表现型 $X$ 的目标函数值相关联， $X$ 越接近于目标函数的最优点，其适应度越大；反之，其适应度越小。</p>
+<p>遗传算法中，决策变量 $X$ 组成了问题的解空间。对问题最优解的搜索是通过对染色体 $X$ 的搜索过程来进行的，从而由所有的染色体￥就组成了问题的搜索空间。</p>
+<p>生物的进化是以集团为主钵的。与此相对应，遗传算法的运算对象是由 $M$ 个个体所组成的集合，称为群体。与生物一代一代的自然进化过程相类似，遗传算法的运算过程也是一个反复迭代过程：第 $t$ 代群体记做 $P(t)$ ，经过一代遗传和进化后，得到第 $t+1$ 代群体，它们也是由多个个体组成的集合，记做 $P(t+1)$ 。这个群体不断地经过遗传和进化操作，并且每次都按照优胜劣汰的规则将适应度较高的个体更多地遗传到下一代，这样最终在群体中将会得到一个优良的个体 $X$ ，它所对应的表现型 $X$ 将达到或接近于河题的最优解 $X^{*}$ 。</p>
+<p>生物的进化过程主要是通过染色体之间的交叉和染色体的变异完成的。与此相对应，遗传算法中最优解的搜索过程也模仿生物的进化过程，使用所谓的遗传算子（genetic opcra1ors）作用」群体 $P(t)$ 中，进行下述遗传操作，从而得到新一代群体 $P(t+1)$ 。</p>
+<ul>
+<li><strong>选择（selection）</strong> :根据各个个体的适应度，按照一定的规则或方法，从第 $t$ 代群体 $P(t)$ 中选择出一些优良的个体遗传到下一代群体 $P(t+1)$ 中。</li>
+<li><strong>交叉（crossover）</strong> :将群体 $P(t)$ 内的各个个体随机搭配成对，对每一对个体，以某个概率（称为交叉概率，crossoverrate）交换它们之间的部分染色体。</li>
+<li><strong>变异（mutation）</strong> :对群体 $P(t)$ 中的每一个个体，以某一概率（称为变异概率，mutation rate）改变某一个或某一些基因座上的基因值为其他的等位基因。</li>
+</ul>
+<h1 id="2-遗传算法的一般步骤"><a href="#2-遗传算法的一般步骤" class="headerlink" title="2. 遗传算法的一般步骤"></a>2. 遗传算法的一般步骤</h1><p><img src="../images/GA_flowchart.jpg" alt="GA_flowchart"></p>
+<p>遗传算法的主要运算步骤过程如下：</p>
+<ol>
+<li>初始化。设置进化代数计数器 $t \leftarrow 0$ ;设置最大进化代数;随机生成M个个体作为初始群体 $P(0)$ 。</li>
+<li>个体评价。计算群体 $P(t)$ 中各个个体的适应度。</li>
+<li>选择运算。将选择算子作用于群体。</li>
+<li>交叉运算。将交叉算子作用于群体。</li>
+<li>变异运算。将变异算子作用于群体。群体 $P(t)$ 经过选择、交叉、变异运算之后得到下一代群体 $P(t+1)$ 。</li>
+<li>终止条件判断。<ul>
+<li>若上 $t \leqslant T$ ，则: $t \leftarrow t+1$， 转到步骤 2；</li>
+<li>若 $t &gt; T$ ，则以进化过程中所得到的具有最大适应度的个体作为最优解输出，终止计算。</li>
+</ul>
+</li>
+</ol>
+<h1 id="3-遗传算法的特点"><a href="#3-遗传算法的特点" class="headerlink" title="3. 遗传算法的特点"></a>3. 遗传算法的特点</h1><p>遗传算法是一类可用于复杂系统优化计算的鲁棒搜索算法，与其他一些优化算法相比、它主要有下述几个特点：</p>
+<ol>
+<li><p>遗传算法 <strong>以决策变量的编码作为运算对象</strong> 。传统的优化算法往往直接利用决策变址的实际值本身来进行优化计算，但遗传算法不是直接以决策变量的值，而是以决策变量的某种形式的编码为运算对象。这种对决策变量的编码处理方式，使得我们在优化计算过程中可以借鉴生物学中染色体和基因等概念，可以模仿自然界中生物的遗传和进化等机理，也使得我们可以方便地应用遗传操作算子。特别是对些无数值概念或很难有数值概念，而只有代码概念的优化问题，编码处理方式更显示出了其独特的优越性。</p>
+</li>
+<li><p>遗传算法 <strong>直接以目标函数值作为搜索信息</strong> 。传统的优化算法不仅需要利用目标函数值，而且往往需要目标函数的导数值等其他一些辅助信息才能确定搜索方向。而遗传算法仅使用由目标函数值变换来的适应度函数值，就可确定进一步的搜索方向和搜索范围，无需目标函数的导数值等其他些辅助信息。这个特性对很多目标函数是无法或很难求导数的函数，或导数不存在的函数的优化问题，以及组合优化问题等，应用遗传算法时就显得比较方便，因为它避开了函数求导这个障碍。再者，直接利用目标函数值或个体适应度，也可使得我们可以把搜索范围集中到适应度较高的部分搜索空间中，从而提高了搜索效率。</p>
+</li>
+<li><p>遗传算法 <strong>同时使用多个搜索点的搜索信息</strong> 。传统的优化算法往往是从解空间中的一个初始点开始最优解的迭代搜索过程。单个搜索点所提供的搜索信息毕竟不多，所以搜索效率不高，有时甚至使搜索过程陷于局部最优解而停滞不前。遗传算法从由很多个体所组成的一个初始群体开始最优解的搜索过程，而不是从一个单一的个体开始搜索。对这个群体所进行的选择、交叉、变异等运算，产生出的乃是新一代的群体，在这之中包括了很多群体信息。这些信息可以避免搜索一些不必搜索的点，所以实际上相当于搜索了更多的点，这是遗传算法所特有的一种隐含并行性。</p>
+</li>
+<li><p>遗传算法使用 <strong>概率搜索技术</strong> 。很多传统的优化算法往往使用的是确定性的搜索方法，一个搜索点到另一个搜索点的转移有确定的转移方法和转移关系，这种确定性往往也有可能使得搜索永远达不到最优点，因而也限制了算法的应用范围。而遗传算法属于一种自适应概率搜索技术，其选择、交叉、变异等运算都是以一种概率的方式来进行的，从面增加了其搜索过程的灵活性。虽然这种概率特性也会使群体中产生一些适应度不高的个体，但随着进化过程的进行，新的群体中总会更多地产生出许多优良的个体，实践和理论都已证明了在一定条件下遗传算法总是以概率 1 收敛于问题的最优解。当然，交叉概率和变异概率等参数也会影响算法的搜索效果和搜索效率，所以如何选择遗传算法的参数在其应用中是一个比较重要的问题。而另一方面，与其他一些算法相比，遗传算法的鲁棒性又会使得参数对其搜索效果的影响会尽可能地低。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" rel="tag"># 遗传算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/04/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E7%94%9F%E7%89%A9%E5%AD%A6%E5%9F%BA%E7%A1%80/" rel="prev" title="遗传算法的生物学基础">
+                  <i class="fa fa-chevron-left"></i> 遗传算法的生物学基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">siyue</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
