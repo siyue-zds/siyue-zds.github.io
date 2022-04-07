@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/white/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"siyue-zds.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="不同的编码方法和不同的遗传算子构成了各种不同的遗传算法，但这些遗传算法都有共同的特点：即通过对生物遗传和进化过程中选择、交叉、变异机理的模仿，来完成对问题最优解的自适应搜索过程。基于这个共同特点，Goldberg 总结出了一种统一的最基本的遗传算法——基本遗传算法（Simple Ge-netic Algorithms，简称SGA）。 基本遗传算法只使用选择算子、交叉算子和变异算子这三种基本遗传算子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基本遗传算法">
+<meta property="og:url" content="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="不同的编码方法和不同的遗传算子构成了各种不同的遗传算法，但这些遗传算法都有共同的特点：即通过对生物遗传和进化过程中选择、交叉、变异机理的模仿，来完成对问题最优解的自适应搜索过程。基于这个共同特点，Goldberg 总结出了一种统一的最基本的遗传算法——基本遗传算法（Simple Ge-netic Algorithms，简称SGA）。 基本遗传算法只使用选择算子、交叉算子和变异算子这三种基本遗传算子">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/roulette_%20wheel.png">
+<meta property="og:image" content="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/crossover_example.png">
+<meta property="og:image" content="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/mutation_example.png">
+<meta property="article:published_time" content="2022-04-07T10:18:20.000Z">
+<meta property="article:modified_time" content="2022-04-07T12:24:34.721Z">
+<meta property="article:author" content="siyue">
+<meta property="article:tag" content="遗传算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/roulette_%20wheel.png">
+
+
+<link rel="canonical" href="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":"","permalink":"https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/","path":"2022/04/07/基本遗传算法/","title":"基本遗传算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>基本遗传算法 | Blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">4</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E6%9E%84%E6%88%90%E8%A6%81%E7%B4%A0"><span class="nav-text">1. 基本遗传算法的构成要素</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E6%9F%93%E8%89%B2%E4%BD%93%E7%BC%96%E7%A0%81%E6%96%B9%E6%B3%95"><span class="nav-text">1.1 染色体编码方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E4%B8%AA%E4%BD%93%E9%80%82%E5%BA%94%E5%BA%A6%E8%AF%84%E4%BB%B7"><span class="nav-text">1.2 个体适应度评价</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E9%81%97%E4%BC%A0%E7%AE%97%E5%AD%90"><span class="nav-text">1.3 遗传算子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E8%BF%90%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="nav-text">1.4 基本遗传算法的运行参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">2. 基本遗传算法的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E4%B8%AA%E4%BD%93%E9%80%82%E5%BA%94%E5%BA%A6%E8%AF%84%E4%BC%B0"><span class="nav-text">2.1 个体适应度评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%AF%94%E4%BE%8B%E9%80%89%E6%8B%A9%E7%AE%97%E5%AD%90"><span class="nav-text">2.2 比例选择算子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E5%8D%95%E7%82%B9%E4%BA%A4%E5%8F%89%E7%AE%97%E5%AD%90"><span class="nav-text">2.3 单点交叉算子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E5%9F%BA%E6%9C%AC%E4%BD%8D%E5%8F%98%E5%BC%82%E7%AE%97%E5%AD%90"><span class="nav-text">2.4 基本位变异算子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E5%BA%94%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="nav-text">3. 遗传算法应用步骤</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="siyue"
+      src="/images/author.jpg">
+  <p class="site-author-name" itemprop="name">siyue</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/siyue-zds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;siyue-zds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://siyue-zds.github.io/2022/04/07/%E5%9F%BA%E6%9C%AC%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/author.jpg">
+      <meta itemprop="name" content="siyue">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+      <meta itemprop="description" content="">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="基本遗传算法 | Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基本遗传算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-07 18:18:20 / 修改时间：20:24:34" itemprop="dateCreated datePublished" datetime="2022-04-07T18:18:20+08:00">2022-04-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">遗传算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>不同的编码方法和不同的遗传算子构成了各种不同的遗传算法，但这些遗传算法都有共同的特点：即通过对生物遗传和进化过程中选择、交叉、变异机理的模仿，来完成对问题最优解的自适应搜索过程。基于这个共同特点，Goldberg 总结出了一种统一的最基本的遗传算法——基本遗传算法（Simple Ge-netic Algorithms，简称SGA）。</p>
+<p>基本遗传算法只使用选择算子、交叉算子和变异算子这三种基本遗传算子，其遗传进化操作过程简单，容易理解，是其他一些遗传算法的雏形和基础，它不仅给各种遗传算法提供了一个基本框架，同时也具有一定的应用价值。<br><span id="more"></span></p>
+<h1 id="1-基本遗传算法的构成要素"><a href="#1-基本遗传算法的构成要素" class="headerlink" title="1. 基本遗传算法的构成要素"></a>1. 基本遗传算法的构成要素</h1><h2 id="1-1-染色体编码方法"><a href="#1-1-染色体编码方法" class="headerlink" title="1.1 染色体编码方法"></a>1.1 染色体编码方法</h2><p>基本遗传算法使用固定长度的二进制符号串来表示群体中的个体，其等位基因是由二值符号集 $[ 0, 1 ]$ 所组成的。初始群体中各个个体的基因值可用均匀分布的随机数来生成。如:<br>$X=100111001000101101$<br>就可表示一个个体，该个体的染色体长度是 $n=18$ 。</p>
+<h2 id="1-2-个体适应度评价"><a href="#1-2-个体适应度评价" class="headerlink" title="1.2 个体适应度评价"></a>1.2 个体适应度评价</h2><p>基本遗传算法按与个体适应度成正比的概率来决定当前群体中每个个体遗传到下一代群体中的机会多少。为正确计算这个概率，要求所有个体的适应度必须为正数或零。根据不同种类的问题，必须预先确定好由目标函数值到个体适应度之间的转换规则，特别是要预先确定好当目标函数值为负数时的处理方法。</p>
+<h2 id="1-3-遗传算子"><a href="#1-3-遗传算子" class="headerlink" title="1.3 遗传算子"></a>1.3 遗传算子</h2><p>基本遗传算法使用下述三种遗传算子:</p>
+<ul>
+<li>选择运算使用比例选择算子</li>
+<li>交叉运算使用单点交叉算子</li>
+<li>变异运算使用基本位变异算子或均匀变异算子</li>
+</ul>
+<h2 id="1-4-基本遗传算法的运行参数"><a href="#1-4-基本遗传算法的运行参数" class="headerlink" title="1.4 基本遗传算法的运行参数"></a>1.4 基本遗传算法的运行参数</h2><p>基本遗传算法有下述 4 个运行参数需要提前设定：</p>
+<ul>
+<li>$M$ : 群体大小，即群体中所含个体的数量，一般取为 $100 \sim 500$ 。</li>
+<li>$T$ : 遗传运算的终止进化代数，一般取为 $100 \sim 500$ 。</li>
+<li>$p_{c}$ : 交叉概率，一般取为 $0.4 \sim 0.99$ 。</li>
+<li>$p_{m}$ : 变异概率，一般取为 $0.0001 \sim 0.1$ 。</li>
+</ul>
+<p>需要说明的是，4个运行参数对遗传算法的求解结果和求解效率都有一定的影响，但自前尚无合理选择它们的理论依据。在遗传算法的实际应用中，往往需要经过多次试算后才能确定出这些参数合理的取值大小或取值范围。</p>
+<h1 id="2-基本遗传算法的实现"><a href="#2-基本遗传算法的实现" class="headerlink" title="2. 基本遗传算法的实现"></a>2. 基本遗传算法的实现</h1><h2 id="2-1-个体适应度评估"><a href="#2-1-个体适应度评估" class="headerlink" title="2.1 个体适应度评估"></a>2.1 个体适应度评估</h2><p>在遗传算法中，以个体适应度的大小来确定该个体被遗传到下一代群体中的概率。个体的适应度越大，该个体被遗传到下一代的概率也越大；反之，个体的适应度越小，该个体被遗传到下一代的概率也越小。基本遗传算法使用比例选择算子来确定群体中各个个体遗传到下一代群体中的数量。为正确计算不同情况下各个个体的遗传概率，要求所有个体的适应度必须为正数或零，不能是负数。</p>
+<p>对于求目标函数最小值的优化问题,理论上只需简单地对其增加一个负号就可将其转化为求自标函数最大值的优化问题，即：<br>$\min f(X)=\max (-f(X))$<br>当优化目标是求函数最大值,并且目标函数总取正值时，可以直接设定个体的适应度 $F(X)$ 就等于相应的目标函数值 $f(X)$ ，即:<br>$F(X)=f(X)$<br>但实际优化问题中的目标函数值有正也有负，优化目标有求函数最大值，也有求函数最小值，显然上面两式保证不了所有情况下个体的适应度都是非负数这个要求。所以必须寻求出一种通用且有效的由目标函数值到个体适应度之间的转换关系，以保证个体适应度总取非负值。</p>
+<p>为满足适应度取非负值的要求，基本遗传算法一般采用下面两种方法之一将目标函数值 $f(X)$ 变换为个体的适应度 $F(X)$ 。</p>
+<p><strong>方法一</strong>：对于求目标函数最大值的优化问题，变换方法为：<br>$F(X)= \begin{cases}f(X)+C_{\min }, &amp; \text { if } f(X)+C_{\min }&gt;0 \\ 0, &amp; \text { if } f(X)+C_{\min } \leqslant 0\end{cases}$<br>式中， $C_{min}$ 为一个适当地相对比较小的数，它可用下面几种方法之一来选取:</p>
+<ul>
+<li>预先指定的个较小的数。</li>
+<li>进化到当前代为止的最小目标函数值。</li>
+<li>当前代或最近几代群体中的最小目标函数值。</li>
+</ul>
+<p><strong>方法二</strong>：对于求目标函数最小值的优化问题，变换方法为：<br>$F(X)= \begin{cases}C_{\max }-f(X), &amp; \text { if } f(X)&lt;C_{\max } \\ 0, &amp; \text { if } f(X) \geqslant C_{\max }\end{cases}$<br>式中， $C_{min}$ 为一个适当地相对比较大的数，它可用下面几种方法之来选取：</p>
+<ul>
+<li>预先指定的一个较大的数。</li>
+<li>进化到当前代为止的最大目标函数值。</li>
+<li>当前代或最近几代群体中的最大目标函数值。</li>
+</ul>
+<h2 id="2-2-比例选择算子"><a href="#2-2-比例选择算子" class="headerlink" title="2.2 比例选择算子"></a>2.2 比例选择算子</h2><p>选择算子或复制算子的作用是从当前代群体中选择出一些比较优良的个体、并将其复制到下一代群体中。最常用和最基本的选择算子是比例选择算子。所谓比例选择算子，是指个体被选中并遗传到下一代群体中的概率与该个体的适应度大小成正比。</p>
+<p>比例选择实际上是一种有退还随机选择，也叫做赌盘（Roulette Wheel）选择，因为这种选择方式与赌博中的赌盘操作原理颇为相似。</p>
+<center>
+    <img src="roulette_ wheel.png" width="50%" height="50%"/>
+</center>
+
+<p>整个赌盘被分为大小不同的一些扇面，分别对应着价值各不相同的一些赌博物品。当旋转着的赌盘自然停下来时，其指针所指扇面上的物品就归赌博者所有。虽然赌盘的指针具体停止在哪一个扇面是无法预测的，但指针指向各个扇面的概率却是可以估计的，它与各个扇面的圆心角大小成正比：圆心角越大，停在该扇面的可能性也越大；圆心角越小，停在该扇面的可能性也越小。与此类似，在遗传算法中，整个群体被各个个体所分割，各个个体的适应度在全部个体的适应度之和中所占比例也大小不一，这个比例值瓜分了整个赌盘盘面，它们也决定了各个个体被遗传到下一代群体中的概率。</p>
+<p>比例选择算子的具体执行过程是:</p>
+<ol>
+<li>先计算出群体中所有个体的适应度的总和。</li>
+<li>其次计算出每个个体的相对适应度的大小，它即为各个个体被遗传到下一代群体中的概率。</li>
+<li>最后再使用模拟赌盘操作（即 0 到 1 之间的随机数）来确定各个个体被选中的次数。</li>
+</ol>
+<h2 id="2-3-单点交叉算子"><a href="#2-3-单点交叉算子" class="headerlink" title="2.3 单点交叉算子"></a>2.3 单点交叉算子</h2><p>单点交叉算子是最常用和最基本的交叉操作算子。单点交叉算子的具体执行过程如下：</p>
+<ol>
+<li>对群体中的个体进行两两随机配对。若群体大小为 $M$ ，则共有 $\lfloor M / 2\rfloor$ 对相互配对的个体组。其中 $\lfloor x \rfloor$ 表示不大于 $x$ 的最大的整数。</li>
+<li>对每一对相互配对的个体，随机设置某一基因座之后的位置为交叉点。若染色体的长度为 $n$ ，则共有 $(n-1)$ 个可能的交叉点位置。</li>
+<li>对每一对相互配对的个体，依设定的交叉概率 $p_{c}$ 在其交叉点处相互交换两个个体的部分染色体，从而产生出两个新的个体。</li>
+</ol>
+<center>
+    <img src="crossover_example.png" width="80%" height="80%"/>
+</center>
+
+<h2 id="2-4-基本位变异算子"><a href="#2-4-基本位变异算子" class="headerlink" title="2.4 基本位变异算子"></a>2.4 基本位变异算子</h2><p>基本位变异算子是最简单和最基本的变异操作算子。对于基本遗传算法中用二进制编码符号串所表示的个体，若需要进行变异操作的某一基因座上的原有基因值为 $0$ ，则变异操作将该基因值变为 $1$ ；反之，若原有基因值为 $1$ ，则变异操作作将其变为 $0$ 。</p>
+<p>基本位变异算子的具体执行过程是:</p>
+<ol>
+<li>对个体的每一个基因座，依变异概率 $p_{m}$ 指定其为变异点。</li>
+<li>对每一个指定的变异点，对其基因值做取反运算或用其他等位基因值来代替，从而产生出一个新的个体。</li>
+</ol>
+<center>
+    <img src="mutation_example.png" width="80%" height="80%"/>
+</center>
+
+<h1 id="3-遗传算法应用步骤"><a href="#3-遗传算法应用步骤" class="headerlink" title="3. 遗传算法应用步骤"></a>3. 遗传算法应用步骤</h1><p>基本遗传算法是一个迭代过程，它模仿生物在自然环境中的遗传和进化机理，反复将选择算子、交叉算子、变异算子作用于群体，最终可得到问题的最优解或近似最优解。虽然算法的思想比较单纯，结构也比较简单，但它却也具有一定的实用价值，能够解决一些复杂系统的优化计算问题。</p>
+<p>遗传算法提供了一种求解复杂系统优化问题的通用框架，它不依赖于问题的领域和种类。对一个需要进行优化计算的实际应用问题，一般可按下述步骤来构造求解该问题的遗传算法：</p>
+<ol>
+<li>确定决策变量及其各种约束条件，即确定出个体的表现型和问题的解空间。</li>
+<li>建立优化模型，即确定出目标函数的类型（是求目标函数的最大值还是求目标函数的最小值?）及其数学描述形式或量化方法。</li>
+<li>确定表示可行解的染色体编码方法，也即确定出个体的基因型 $X$ 及遗传算法的搜索空间。</li>
+<li>确定解码方法，即确定出由个体基因型 $X$ 到个体表现型的对应关系或转换方法。</li>
+<li>确定个体适应度的量化评价方法，即确定出由目标函数值 $f(X)$ 到个体适应度 $F(X)$ 的转换规则。</li>
+<li>设计遗传算子，即确定出选择运算、交叉运算、变异运算等遗传算子的具体操作方法。</li>
+<li>确定遗传算法的有关运行参数，即确定出遗传算法的 $M$ 、 $T$ 、$p_{c}$ 、 $p_{m}$ 等参数。</li>
+</ol>
+<p>由上述构造步骤可以看出，可行解的编码方法、遗传算子的设计是构造遗传算法时需要考虑的两个主要问题，也是设计遗传算法时的两个关键步骤。对不同的优化问题需要使用不同的编码方法和不同操作的遗传算子，它们与所求解的具体问题密切相关，因而对所求解问题的理解程度是遗传算法应用成功与否的关键。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" rel="tag"># 遗传算法</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/06/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B/" rel="prev" title="遗传算法简介">
+                  <i class="fa fa-chevron-left"></i> 遗传算法简介
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">siyue</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
